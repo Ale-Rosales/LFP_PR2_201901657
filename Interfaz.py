@@ -2,7 +2,9 @@ from tkinter import *
 from tkinter import messagebox as MessageBox
 import os
 import webbrowser
+from Lexico import Lexico
 
+lexico = Lexico()
 
 class Interfaz:
     def __init__(self):
@@ -51,10 +53,16 @@ class Interfaz:
     
     #-------------------------------------FUNCIONALIDAD INTERFAZ-------------------------------------
     def EntryBox(self):
+        texto = self.texto.get()
+        lexico.Analizar(texto)
+        lexico.printTokens()
         comando = self.texto.get()
         agregar = comando+'\n'+'\n'
         self.area.insert(1.0,agregar)
         self.comandos.delete(0,END)
+
+    def SaveTokens(self):
+        lexico.printTokens()
     
     
     #-----------BOTONES DOCUMENTACION-----------

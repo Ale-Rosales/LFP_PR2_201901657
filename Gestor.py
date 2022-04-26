@@ -25,6 +25,7 @@ class Gestor:
         except Exception as e:
             print(e)
 
+    #PARA VERIFICAR QUE SI ESTA LA DATA CARGADA
     def Print(self):
         for x in self.data:
             print(x.equipo1)
