@@ -3,11 +3,13 @@ from tkinter import messagebox as MessageBox
 import os
 import webbrowser
 from Lexico import Lexico
+from Sintactico import Sintactico
 
 lexico = Lexico()
 
 class Interfaz:
-    def __init__(self):
+    def __init__(self,gestor):
+        self.gestor = gestor
         raiz = Tk()
         raiz.title("La Liga Bot")
         raiz.resizable(0,0)
@@ -52,14 +54,35 @@ class Interfaz:
         raiz.mainloop()
     
     #-------------------------------------FUNCIONALIDAD INTERFAZ-------------------------------------
+    
+    #---------------BOTON ENVIAR---------------
     def EntryBox(self):
+        #ESTO SE ENVIA AL ANALIZADOR
         texto = self.texto.get()
         lexico.Analizar(texto)
         lexico.printTokens()
-        comando = self.texto.get()
-        agregar = comando+'\n'+'\n'
-        self.area.insert(1.0,agregar)
-        self.comandos.delete(0,END)
+        listToke = lexico.listaTokens
+        sintactico = Sintactico(listToke, self.gestor)
+        sintactico.AnalizarS()
+    
+        #ESTO SE ENVIA AL AREABOX DEL BOT
+        if texto == "":
+            pass
+        else:
+            agregar = texto+'\n'+'\n'
+            self.area.insert(1.0,agregar)
+            self.comandos.delete(0,END)
+
+        #REGRESA LA RESPUESTA DEL ANALIZADOR SINTACTICO
+        add = self.gestor.EntryBoxAdd()
+        if add == "":
+            pass
+        else:
+            addT = add+'\n'+'\n'
+            self.area.insert(1.0,addT)
+        add = self.gestor.LimpiarText()
+        addT = ""
+        #print(agregar)
 
     def SaveTokens(self):
         lexico.printTokens()

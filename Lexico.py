@@ -102,7 +102,7 @@ class Lexico:
             self.buffer += caracter
             self.columna += 1
         else:
-            self.addToken(self.buffer, self.linea, self.columna, 'Año')
+            self.addToken(self.buffer, self.linea, self.columna, 'Entero')
             self.estado = 0
             self.i -= 1
 
@@ -113,8 +113,8 @@ class Lexico:
 
     def Analizar(self, cadena):
         cadena = cadena + '$'
-        #self.listaErrores = []
-        #self.listaTokens = []
+        self.listaErrores = []
+        self.listaTokens = []
         self.i = 0
         while self.i < len(cadena):
             if self.estado == 0:
