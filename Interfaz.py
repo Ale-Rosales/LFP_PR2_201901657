@@ -4,6 +4,7 @@ import os
 import webbrowser
 from Lexico import Lexico
 from Sintactico import Sintactico
+import time
 
 lexico = Lexico()
 
@@ -21,8 +22,9 @@ class Interfaz:
         self.area = Text(miFrame)
         self.area.place(x=10,y=10)
         #self.area.insert(1.0, "Bienvenido a La Liga Bot")
-        self.area.config(width=68,height=36)
-        self.area.insert(-1.,"Bienvenido a La Liga Bot")
+        self.area.config(width=70,height=36)
+        self.area.insert(-1.,"Bienvenido a La Liga Bot\n")
+        self.area.configure(foreground="red")
         #BOTONES
         bErrores = Button(miFrame, text="Reporte Errores",font=("Comic Sans MS", 10), width=15, height=1)
         bErrores.place(x=590, y=15)
@@ -61,6 +63,7 @@ class Interfaz:
         texto = self.texto.get()
         lexico.Analizar(texto)
         lexico.printTokens()
+        lexico.printErrores()
         listToke = lexico.listaTokens
         sintactico = Sintactico(listToke, self.gestor)
         sintactico.AnalizarS()
@@ -69,8 +72,10 @@ class Interfaz:
         if texto == "":
             pass
         else:
-            agregar = texto+'\n'+'\n'
-            self.area.insert(1.0,agregar)
+            agregar = '\n'+texto+'\n'
+            #agregar = texto+'\n'+'\n'
+            self.area.insert(END,agregar)
+            self.area.configure(foreground="blue")
             self.comandos.delete(0,END)
 
         #REGRESA LA RESPUESTA DEL ANALIZADOR SINTACTICO
@@ -78,8 +83,10 @@ class Interfaz:
         if add == "":
             pass
         else:
-            addT = add+'\n'+'\n'
-            self.area.insert(1.0,addT)
+            addT = '\n'+add+'\n'
+            #addT = add+'\n'+'\n'
+            self.area.insert(END,addT)
+            self.area.configure(foreground="green")
         add = self.gestor.LimpiarText()
         addT = ""
         #print(agregar)

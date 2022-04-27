@@ -7,7 +7,7 @@ LFP. Proyecto 2. Primer Semestre 2022
 | -------------------------- | ----------------------------------------------------- | ----------------- | ----------------------- |
 | Cadena | Una cadena de caracteres encerrada en comillas dobles  | \\"[^.\\"]\*\\" | "Real Madrid" "Barcelona" |
 | Menor que | Signo menor que | '<' | < |
-Año | Cuatro numero consecutivos | \d\d\d\d | 2022 1999
+Entero | Numero o numeros consecutivos | \d | 2022 1999 12 2
 Guion | Signo guion | '-' | -
 | Mayor que | Signo mayor que | '>' | >
 | RESULTADO | reservada RESULTADO  | RESULTADO | RESULTADO
@@ -24,6 +24,10 @@ Guion | Signo guion | '-' | -
 | SUPERIOR | reservada SUPERIOR | SUPERIOR | SUPERIOR
 | INFERIOR | reservada INFERIOR | INFERIOR | INFERIOR 
 | ADIOS | reservada ADIOS | ADIOS | ADIOS
+| -f | reservada BANDERA_f | -f | -f
+| -ji | reservada BANDERA_ji | -ji | -ji
+| -jf | reservada BANDERA_jf | -jf | -jf
+| -n | reservada BANDERA_n | -n | -n
 
 # GRAMÁTICA
 
@@ -37,14 +41,23 @@ Guion | Signo guion | '-' | -
 | | ::= | PARTIDOS
 | | ::= | TOP
 | | ::= | ADIOS
-| RESULTADO | ::= | pr_resultado cadena pr_vs cadena pr_temporada menorque año guion año mayor que
-| JORNADA | ::= | 
-| GOLES | ::= | pr_goles CONDICION cadena pr_temporada menorque año guion año mayor que
+| RESULTADO | ::= | pr_resultado cadena pr_vs cadena pr_temporada menorque entero guion entero mayorque
+| JORNADA | ::= | pr_jornada entero pr_temporada menorque entero guion entero mayorque LISTA
+| GOLES | ::= | pr_goles CONDICION cadena pr_temporada menorque entero guion entero mayorque
+| TABLA | ::= | pr_tabla pr_temporada menorque entero guion entero mayorque LISTA
+| PARTIDOS | ::= | pr_partidos cadena pr_temporada menorque entero guion entero mayorque LISTA
+| TOP | ::= | pr_top CONDICION pr_temporada menorque entero guion entero mayorque LISTA
+| ADIOS | ::= | pr_adios
 | CONDICION | ::= | pr_local 
 | | ::= | \| pr_visitante
 | | ::= | \| pr_total
-| TABLA | ::= |
-| PARTIDOS | ::= |
-| TOP | ::= |
-| ADIOS | ::= | pr_adios
+| | ::= | \| pr_superior
+| | ::= | \| pr_inferior
+| LISTA | ::= | BANDERA LISTA_
+| LISTA_ | ::=  | BANDERA LISTA_
+| LISTA_ | ::= | epsilon
+| BANDERA | ::= | pr_bandera VALOR
+| VALOR | ::= | string
+| | ::= | \| entero
+
 

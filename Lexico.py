@@ -1,3 +1,4 @@
+from distutils.filelist import findall
 from errno import EROFS
 from sqlite3 import enable_shared_cache
 from pyparsing import col
@@ -5,6 +6,7 @@ from soupsieve import select
 from Token import Token
 from Error import Error
 from prettytable import PrettyTable
+import re
 
 class Lexico:
 
@@ -49,6 +51,10 @@ class Lexico:
             self.buffer += caracter
             self.columna += 1
             self.simbolo = 'Guion'
+        elif caracter == '_':
+            self.estado = 5
+            self.buffer += caracter
+            self.simbolo = "Guion Bajo"
         elif caracter == '>':
             self.estado = 5
             self.buffer += caracter
@@ -72,15 +78,19 @@ class Lexico:
             self.buffer += caracter
             self.columna += 1
         else:
-            if self.buffer in ['RESULTADO','VS','TEMPORADA','JORNADA','GOLES','LOCAL','VISITANTE','TOTAL','TABLA','PARTIDOS','TOP','SUPERIOR','INFERIOR','ADIOS']:
+            if self.buffer in ['RESULTADO','VS','TEMPORADA','JORNADA','GOLES','LOCAL','VISITANTE','TOTAL','TABLA','PARTIDOS','TOP','SUPERIOR','INFERIOR','ADIOS','f','ji','jf','n']:
                 self.addToken(self.buffer, self.linea, self.columna, 'pr_'+self.buffer)
+                self.estado = 0
+                self.i -= 1
+            elif re.findall('\w',self.buffer):
+                self.addToken(self.buffer, self.linea, self.columna, "String")
                 self.estado = 0
                 self.i -= 1
             else:
                 self.addError(self.buffer, self.linea, self.columna)
                 self.columna += 1
                 self.estado = 0
-                self.i -=1 
+                self.i -=1
     
     def S2(self, caracter : str):
         if caracter == '"':
