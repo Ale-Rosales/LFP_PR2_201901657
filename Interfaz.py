@@ -67,6 +67,7 @@ class Interfaz:
         listToke = lexico.listaTokens
         sintactico = Sintactico(listToke, self.gestor)
         sintactico.AnalizarS()
+        sintactico.ErroresS()
     
         #ESTO SE ENVIA AL AREABOX DEL BOT
         if texto == "":

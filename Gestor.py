@@ -1,5 +1,6 @@
 from csv import list_dialects
 from dataclasses import dataclass
+from http.cookiejar import FileCookieJar
 import imp
 from msilib.schema import Error
 from typing import TextIO
@@ -91,22 +92,52 @@ class Gestor:
             texto = "Los goles anotados por el "+eq+" en total en la temporada "+fecha+"fueron "+str(t_goles)
                 
 
-    def opJornadaSin(self,jornada,fecha):
-        print(jornada+"\n"+fecha)
+    def opJornadaSin(self,jornada,fecha,nombre):
+        #FALTA AGREGAR A UNA LISTA PARA PASAR AL HTML
+        for x in self.data:
+            if x.jornada == jornada and x.temporada == fecha:
+                print(x.equipo1+": "+str(x.goles1)+" - "+x.equipo2+": "+str(x.goles2))
+        #print(jornada+"\n"+fecha+"\n"+nombre)
     
     def opJornadaCon(self,jornada,fecha,nombre):
-        print(jornada+"\n"+fecha+"\n"+nombre)
+        #FALTA AGREGAR A UNA LISTA PARA PASAR AL HTML
+        for x in self.data:
+            if x.jornada == jornada and x.temporada == fecha:
+                print(x.equipo1+": "+str(x.goles1)+" - "+x.equipo2+": "+str(x.goles2))
+        #print(jornada+"\n"+fecha+"\n"+nombre)
+    
+    def opTablaSin(self,fecha,nombre):
+        print(fecha+"\n"+nombre)
+    
+    def opTablaCon(self,fecha,nombre):
+        print(fecha+"\n"+nombre)
 
-
-    def opTabla(self):
-        pass
+    def opTopSin(self,condicion,fecha,numtop):
+        global texto
+        if condicion == "SUPERIOR":
+            for x in self.data:
+                if x.temporada == fecha:
+                    pass
+        elif condicion == "INFERIOR":
+            for x in self.data:
+                if x.temporada == fecha:
+                    pass
+        #print(condicion+"\n"+fecha+"\n"+numtop)
+    
+    def opTopCon(self,condicion,fecha,numtop):
+        global texto
+        if condicion == "SUPERIOR":
+            for x in self.data:
+                if x.temporada == fecha:
+                    pass
+        elif condicion == "INFERIOR":
+            for x in self.data:
+                if x.temporada == fecha:
+                    pass
+        #print(condicion+"\n"+fecha+"\n"+numtop)
 
     def opPartidos(self):
         pass
-
-    def opTop(self):
-        pass
-
 
     def opAdios(self):
         MessageBox.showwarning("Alerta", "Gracias por utilizarme, nos vemos.")

@@ -1,14 +1,3 @@
-from ast import IsNot
-from errno import ESHLIBVERS
-from lib2to3.pgen2 import token
-from lib2to3.pgen2.tokenize import TokenError
-from pickletools import read_uint1
-from re import T, X
-from sqlite3 import enable_shared_cache
-from sys import _enablelegacywindowsfsencoding
-from tkinter import N
-from tkinter.messagebox import NO
-from matplotlib.colors import NoNorm
 from prettytable import PrettyTable
 from pyparsing import tokenMap
 from Gestor import *
@@ -195,10 +184,9 @@ class Sintactico:
                                     elif token.tipo == "Mayor que":
                                         token = self.popToken()
                                         if token is None:
-                                            self.agregarError("Guion","EOF",0)
                                             fecha = str(año1)+str(guion)+str(año2)
-                                            self.gestor.opJornadaSin(jornada,fecha)
-                                            return
+                                            nombre = "jornada_"+jornada+".html"
+                                            self.gestor.opJornadaSin(jornada,fecha,nombre)
                                         elif token.tipo == "Guion":
                                             token = self.popToken()
                                             if token is None:
@@ -210,7 +198,7 @@ class Sintactico:
                                                     self.agregarError("String | Entero","EOF",0)
                                                     return
                                                 elif token.tipo == "String" or token.tipo == "Entero":
-                                                    nombre += token.lexema
+                                                    nombre = token.lexema+".html"
                                                     fecha = str(año1)+str(guion)+str(año2)
                                                     self.gestor.opJornadaCon(jornada,fecha,nombre)
                                                 else:
@@ -317,6 +305,7 @@ class Sintactico:
         año1 = ""
         guion = ""
         año2 = ""
+        fecha = ""
         token = self.popToken()
         if token.tipo == "pr_TABLA":
             token = self.popToken()
@@ -353,6 +342,30 @@ class Sintactico:
                                     return
                                 elif token.tipo == "Mayor que":
                                     token = self.popToken()
+                                    if token is None:
+                                        fecha = str(año1)+str(guion)+str(año2)
+                                        nombre = "temporada_"+str(fecha)+".html"
+                                        self.gestor.opTablaSin(fecha,nombre)
+                                    elif token.tipo == "Guion":
+                                        token = self.popToken()
+                                        if token is None:
+                                            self.agregarError("pr_f","EOF",0)
+                                            return
+                                        elif token.tipo == "pr_f":
+                                            token = self.popToken()
+                                            if token is None:
+                                                self.agregarError("String | Entero","EOF",0)
+                                                return
+                                            elif token.tipo == "String" or token.tipo == "Entero":
+                                                nombre = token.lexema+".html"
+                                                fecha = str(año1)+str(guion)+str(año2)
+                                                self.gestor.opTablaCon(fecha,nombre)
+                                            else:
+                                                self.agregarError("String | Entero",token.tipo,0)
+                                        else:
+                                            self.agregarError("pr_f",token.tipo,0)
+                                    else:
+                                        self.agregarError("Guion",token.tipo,0)
                                     ####   AQUI IRIA LA LISTA
                                 else:
                                     self.agregarError("Mayor que",token.tipo,0)
@@ -441,6 +454,7 @@ class Sintactico:
         año1 = ""
         año2= ""
         guion = ""
+        top = ""
         token = self.popToken()
         if token.tipo == "pr_TOP":
             token = self.popToken()
@@ -483,7 +497,30 @@ class Sintactico:
                                         return
                                     elif token.tipo == "Mayor que":
                                         token = self.popToken()
-                                        ### AQUI VA LA LISTA
+                                        if token is None:
+                                            fecha = str(año1)+str(guion)+str(año2)
+                                            top = "5"
+                                            self.gestor.opTopSin(condicion,fecha,top)
+                                        elif token.tipo == "Guion":
+                                            token = self.popToken()
+                                            if token is None:
+                                                self.agregarError("pr_n","EOF",0)
+                                                return
+                                            elif token.tipo == "pr_n":
+                                                token = self.popToken()
+                                                if token is None:
+                                                    self.agregarError("Entero","EOF",0)
+                                                    return
+                                                elif token.tipo == "Entero":
+                                                    top = token.lexema
+                                                    fecha = str(año1)+str(guion)+str(año2)
+                                                    self.gestor.opTopCon(condicion,fecha,top)
+                                                else:
+                                                    self.agregarError("Entero",token.tipo,0)
+                                            else:
+                                                self.agregarError("pr_n",token.tipo,0)
+                                        else:
+                                            self.agregarError("Guion",token.tipo,0)
                                     else:
                                         self.agregarError("Mayor que",token.tipo,0)
                                 else:
