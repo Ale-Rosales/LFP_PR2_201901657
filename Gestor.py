@@ -1,18 +1,13 @@
-from csv import list_dialects
-from dataclasses import dataclass
-from http.cookiejar import FileCookieJar
-import imp
-from msilib.schema import Error
-from typing import TextIO
-from matplotlib.cbook import print_cycles
-
-from matplotlib.pyplot import text
+from itertools import starmap
 from pyparsing import TokenConverter
 from Data import Data
 import easygui
 import re
 from tkinter import messagebox as MessageBox
 import sys
+import random
+import os
+import webbrowser
 
 texto = ""
 
@@ -93,21 +88,163 @@ class Gestor:
                 
 
     def opJornadaSin(self,jornada,fecha,nombre):
-        #FALTA AGREGAR A UNA LISTA PARA PASAR AL HTML
+        global texto
+        texto = "Archivo de resultados jornada "+str(jornada)+" temporada "+str(fecha)+" generado."
+        textoTabla = ""
+        txtFinal = ('</div>'
+            '</body>'
+            '</html>')
+        
+        i = 0
         for x in self.data:
             if x.jornada == jornada and x.temporada == fecha:
-                print(x.equipo1+": "+str(x.goles1)+" - "+x.equipo2+": "+str(x.goles2))
+                i += 1
+                textoTabla = textoTabla+'<tr>'+'<td>'+str(x.equipo1)+'</td>'+'<td>'+str(x.equipo2)+'</td>'+'<td>'+str(x.goles1)+" - "+str(x.goles2)+'</td>'+'</tr>'
+                #print(x.equipo1+": "+str(x.goles1)+" - "+x.equipo2+": "+str(x.goles2))
+
+        contenidoHTML = (
+            '<!DOCTYPE html>'
+            '<html>' 
+            '<head> '
+            '<meta charset="utf-8"> '
+            '<title>REPORTE JORNADA '+str(jornada)+'</title>'
+            '<link href="assets/css/bootstrap-responsive.css" type="text/css" rel="stylesheet">'
+            '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet">'
+            '<link rel="stylesheet" type="text/css"  href="Style.css">'
+            '<link rel="stylesheet" type="text/css" href="bootstrap.css">'
+            '</head>'
+            '<body>'
+            '<div class="container-fluid welcome-page" id="home">'
+            '<div class="jumbotron">'
+            '<h1>'
+            '<span>'+"Jornada "+str(jornada)+" Temporada "+str(fecha)+'</span>'
+            '</h1>'
+            '</div>'
+            '</div>')
+        
+        file = open("./REPORTES/"+nombre,"w",encoding = "utf-8")
+        file.write(str(contenidoHTML))
+        file.write('<h2>'
+            '<span>Resumen de jornada/temporada</span>'
+            '</h2>'
+            '</br>'
+            '</br>')
+        
+        txtHtml=(
+            '<table class="table table-responsive">'
+            '<thead>'
+            '<tr>'
+            '<th scope="col">Equipo Local</th>'
+            '<th scope="col">Equipo Visitante</th>'
+            '<th scope="col">Resultado</th>'
+            '</tr>'
+            '</thead>'
+            '<tbody>')
+        
+        for x in self.data:
+            if x.jornada == jornada and x.temporada == fecha:
+                i += 1
+                txtHtml = txtHtml+'<tr>'+'<td>'+str(x.equipo1)+'</td>'+'<td>'+str(x.equipo2)+'</td>'+'<td>'+str(x.goles1)+" - "+str(x.goles2)+'</td>'+'</tr>'
+        
+        file.write(txtHtml)
+        file.write('</tbody>'
+            '</table>'
+            '</div>'
+            '</div>')
+ 
+        file.write(txtFinal)
+        file.close()
+        webbrowser.open("file:///"+os.getcwd()+"/REPORTES/"+nombre)
         #print(jornada+"\n"+fecha+"\n"+nombre)
-    
+
+
     def opJornadaCon(self,jornada,fecha,nombre):
-        #FALTA AGREGAR A UNA LISTA PARA PASAR AL HTML
+        global texto
+        texto = "Archivo de resultados jornada "+str(jornada)+" temporada "+str(fecha)+" generado."
+        textoTabla = ""
+        txtFinal = ('</div>'
+            '</body>'
+            '</html>')
+        
+        i = 0
         for x in self.data:
             if x.jornada == jornada and x.temporada == fecha:
-                print(x.equipo1+": "+str(x.goles1)+" - "+x.equipo2+": "+str(x.goles2))
+                i += 1
+                textoTabla = textoTabla+'<tr>'+'<td>'+str(x.equipo1)+'</td>'+'<td>'+str(x.equipo2)+'</td>'+'<td>'+str(x.goles1)+" - "+str(x.goles2)+'</td>'+'</tr>'
+                #print(x.equipo1+": "+str(x.goles1)+" - "+x.equipo2+": "+str(x.goles2))
+
+        contenidoHTML = (
+            '<!DOCTYPE html>'
+            '<html>' 
+            '<head> '
+            '<meta charset="utf-8"> '
+            '<title>REPORTE JORNADA '+str(jornada)+'</title>'
+            '<link href="assets/css/bootstrap-responsive.css" type="text/css" rel="stylesheet">'
+            '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet">'
+            '<link rel="stylesheet" type="text/css"  href="Style.css">'
+            '<link rel="stylesheet" type="text/css" href="bootstrap.css">'
+            '</head>'
+            '<body>'
+            '<div class="container-fluid welcome-page" id="home">'
+            '<div class="jumbotron">'
+            '<h2>'
+            '<span>'+"Jornada "+str(jornada)+" Temporada "+str(fecha)+'</span>'
+            '</h2>'
+            '</div>'
+            '</div>')
+        
+        file = open("./REPORTES/"+nombre,"w",encoding = "utf-8")
+        file.write(str(contenidoHTML))
+        file.write('<h2>'
+            '<span>Resumen de jornada/temporada</span>'
+            '</h2>'
+            '</br>'
+            '</br>')
+        
+        txtHtml=(
+            '<table class="table table-responsive">'
+            '<thead>'
+            '<tr>'
+            '<th scope="col">Equipo Local</th>'
+            '<th scope="col">Equipo Visitante</th>'
+            '<th scope="col">Resultado</th>'
+            '</tr>'
+            '</thead>'
+            '<tbody>')
+        
+        for x in self.data:
+            if x.jornada == jornada and x.temporada == fecha:
+                i += 1
+                txtHtml = txtHtml+'<tr>'+'<td>'+str(x.equipo1)+'</td>'+'<td>'+str(x.equipo2)+'</td>'+'<td>'+str(x.goles1)+" - "+str(x.goles2)+'</td>'+'</tr>'
+        
+        file.write(txtHtml)
+        file.write('</tbody>'
+            '</table>'
+            '</div>'
+            '</div>')
+
+        file.write(txtFinal)
+        file.close()
+        webbrowser.open("file:///"+os.getcwd()+"/REPORTES/"+nombre)
         #print(jornada+"\n"+fecha+"\n"+nombre)
     
     def opTablaSin(self,fecha,nombre):
-        print(fecha+"\n"+nombre)
+        # VICTORIA SUMA 3 PUNTOS
+        #EMPATE SUMA 1 PUNTOS
+        #DERROTA SUMA 0 PUNTOS
+        global texto
+        epPu = 0
+        #eq = ""
+        for x in self.data:
+            if x.temporada == fecha:
+                """if x.goles1 > x.goles2:
+                    epPu += 3
+                elif x.goles1 < x.goles2:
+                    epPu += 1
+                elif x.goles1 == x.goles2:
+                    epPu += 0"""
+        #print(x.equipo1+" "+str(epPu))
+        #print(fecha+"\n"+nombre)
     
     def opTablaCon(self,fecha,nombre):
         print(fecha+"\n"+nombre)
@@ -140,7 +277,7 @@ class Gestor:
         pass
 
     def opAdios(self):
-        MessageBox.showwarning("Alerta", "Gracias por utilizarme, nos vemos.")
+        MessageBox.showinfo(message="Gracias por utilizarme, nos vemos.",title="Bai")
         exit(0)
 
     

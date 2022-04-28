@@ -601,7 +601,10 @@ class Sintactico:
 
     def ErroresS(self):
         x = PrettyTable()
-        x.field_names = ["Descripcion"]
+        x.field_names = ["DescripcionS"]
         for error_ in self.errores:
             x.add_row([error_])
         print(x)
+    
+    def clearErroresS(self):
+        self.errores.clear()
