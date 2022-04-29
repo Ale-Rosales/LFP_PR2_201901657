@@ -1,4 +1,3 @@
-
 from pyparsing import TokenConverter
 from Data import Data
 import easygui
@@ -9,7 +8,6 @@ import random
 import os
 import webbrowser
 
-from Tabla import Tabla
 
 texto = ""
 
@@ -23,9 +21,6 @@ class Gestor:
     def crearData(self,fecha,temporada,jornada,equipo1,equipo2,goles1,goles2):
         self.data.append(Data(fecha,temporada,jornada,equipo1,equipo2,goles1,goles2))
     
-    def tablaE(self,equipo,puntos):
-        self.puntos.append(Tabla(equipo,puntos))
-
     def cargarData(self):
         archivo = open("LaLigaBot-LFP.csv",'r', encoding = "utf-8")
         contenido = archivo.read()

@@ -4,7 +4,6 @@ import os
 import webbrowser
 from Lexico import Lexico
 from Sintactico import Sintactico
-import time
 
 lexico = Lexico()
 erroresS = []
@@ -64,7 +63,7 @@ class Interfaz:
         texto = self.texto.get()
         lexico.Analizar(texto)
         lexico.AnalizarR(texto)
-        lexico.printTokens()
+        #lexico.printTokens()
         #lexico.printErrores()
         listToke = lexico.listaTokens
         sintactico = Sintactico(listToke, self.gestor)
