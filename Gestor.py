@@ -1,4 +1,4 @@
-from itertools import starmap
+
 from pyparsing import TokenConverter
 from Data import Data
 import easygui
@@ -9,16 +9,23 @@ import random
 import os
 import webbrowser
 
+from Tabla import Tabla
+
 texto = ""
 
 class Gestor:
 
     def __init__(self):
         self.data = []
+        self.aux = []
+        self.puntos = []
 
     def crearData(self,fecha,temporada,jornada,equipo1,equipo2,goles1,goles2):
         self.data.append(Data(fecha,temporada,jornada,equipo1,equipo2,goles1,goles2))
     
+    def tablaE(self,equipo,puntos):
+        self.puntos.append(Tabla(equipo,puntos))
+
     def cargarData(self):
         archivo = open("LaLigaBot-LFP.csv",'r', encoding = "utf-8")
         contenido = archivo.read()
@@ -230,56 +237,367 @@ class Gestor:
     
     def opTablaSin(self,fecha,nombre):
         # VICTORIA SUMA 3 PUNTOS
-        #EMPATE SUMA 1 PUNTOS
-        #DERROTA SUMA 0 PUNTOS
-        global texto
-        epPu = 0
-        #eq = ""
+        # EMPATE SUMA 1 PUNTOS
+        # DERROTA SUMA 0 PUNTOS
+        listEq1 = dict()
+        listEq2 = dict()
+        aux1 = []
+        aux2 = []
+        equipos = []
+        cont = 0
+        cont2 = 0
+        #AGREGAR A DICCIONARIOS LOS EQUIPOS EN LA TEMPORADA
         for x in self.data:
             if x.temporada == fecha:
-                """if x.goles1 > x.goles2:
-                    epPu += 3
-                elif x.goles1 < x.goles2:
-                    epPu += 1
-                elif x.goles1 == x.goles2:
-                    epPu += 0"""
-        #print(x.equipo1+" "+str(epPu))
-        #print(fecha+"\n"+nombre)
+                if x.equipo1 in listEq1:
+                    if listEq1[x.equipo1] == 1:
+                        cont  =+ 1
+                    listEq1[x.equipo1] += 1
+                else:
+                    listEq1[x.equipo1] = 1
+
+                if x.equipo2 in listEq2:
+                    if listEq2[x.equipo2] == 1:
+                        cont2 =+ 1
+                    listEq2[x.equipo2] += 1
+                else:
+                    listEq2[x.equipo2] = 1
+        #AGREGAR LAS LLAVES DEL DICCIONARIO A LISTA
+        for x in listEq1:
+            aux1.append(x)
+        for y in listEq2:
+            aux2.append(y)   
+        #AGREGAR A UNA LISTA LOS EQUIPOS IGUALES EN CADA DICCIONARIO
+        for e in aux1:
+            for f in aux2:
+                if(e==f):
+                    equipos.append(e)
+                    break
+
+        global texto
+        texto = "Archivo de clasificacion de temporada "+str(fecha)+" generado."
+        textoTabla = ""
+        txtFinal = ('</div>'
+            '</body>'
+            '</html>')
+        
+        i = 0
+        for x in equipos:
+            i += 1
+            textoTabla = textoTabla+'<tr>'+'<td>'+str(x)+'</td>'+'<td></td>'+'</tr>'
+        
+        contenidoHTML = (
+            '<!DOCTYPE html>'
+            '<html>' 
+            '<head> '
+            '<meta charset="utf-8"> '
+            '<title>REPORTE CLASIFICACION '+str(fecha)+'</title>'
+            '<link href="assets/css/bootstrap-responsive.css" type="text/css" rel="stylesheet">'
+            '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet">'
+            '<link rel="stylesheet" type="text/css"  href="Style.css">'
+            '<link rel="stylesheet" type="text/css" href="bootstrap.css">'
+            '</head>'
+            '<body>'
+            '<div class="container-fluid welcome-page" id="home">'
+            '<div class="jumbotron">'
+            '<h2>'
+            '<span>'+"Clasificacion Temporada "+str(fecha)+'</span>'
+            '</h2>'
+            '</div>'
+            '</div>')
+        
+        file = open("./REPORTES/"+nombre,"w",encoding = "utf-8")
+        file.write(str(contenidoHTML))
+        file.write('<h2>'
+            '<span>Resumen de clasificacion</span>'
+            '</h2>'
+            '</br>'
+            '</br>')
+        
+        txtHtml=(
+            '<table class="table table-responsive">'
+            '<thead>'
+            '<tr>'
+            '<th scope="col">Equipo</th>'
+            '<th scope="col">Puntos</th>'
+            '</tr>'
+            '</thead>'
+            '<tbody>')
+        
+        for x in equipos:
+            i += 1
+            txtHtml = txtHtml+'<tr>'+'<td>'+str(x)+'</td>'+'<td></td>'+'</tr>'
+        
+        file.write(txtHtml)
+        file.write('</tbody>'
+            '</table>'
+            '</div>'
+            '</div>')
+
+        file.write(txtFinal)
+        file.close()
+        webbrowser.open("file:///"+os.getcwd()+"/REPORTES/"+nombre)
+
+        #print(equipos)
+        #print("Cantidad de Equipos en la Temporada: "+str(len(equipos)))
     
     def opTablaCon(self,fecha,nombre):
-        print(fecha+"\n"+nombre)
+        # VICTORIA SUMA 3 PUNTOS
+        # EMPATE SUMA 1 PUNTOS
+        # DERROTA SUMA 0 PUNTOS
+        listEq1 = dict()
+        listEq2 = dict()
+        aux1 = []
+        aux2 = []
+        equipos = []
+        cont = 0
+        cont2 = 0
+        #AGREGAR A DICCIONARIOS LOS EQUIPOS EN LA TEMPORADA
+        for x in self.data:
+            if x.temporada == fecha:
+                if x.equipo1 in listEq1:
+                    if listEq1[x.equipo1] == 1:
+                        cont  =+ 1
+                    listEq1[x.equipo1] += 1
+                else:
+                    listEq1[x.equipo1] = 1
+
+                if x.equipo2 in listEq2:
+                    if listEq2[x.equipo2] == 1:
+                        cont2 =+ 1
+                    listEq2[x.equipo2] += 1
+                else:
+                    listEq2[x.equipo2] = 1
+        #AGREGAR LAS LLAVES DEL DICCIONARIO A LISTA
+        for x in listEq1:
+            aux1.append(x)
+        for y in listEq2:
+            aux2.append(y)   
+        #AGREGAR A UNA LISTA LOS EQUIPOS IGUALES EN CADA DICCIONARIO
+        for e in aux1:
+            for f in aux2:
+                if(e==f):
+                    equipos.append(e)
+                    break
+
+        global texto
+        texto = "Archivo de clasificacion de temporada "+str(fecha)+" generado."
+        textoTabla = ""
+        txtFinal = ('</div>'
+            '</body>'
+            '</html>')
+        
+        i = 0
+        for x in equipos:
+            i += 1
+            textoTabla = textoTabla+'<tr>'+'<td>'+str(x)+'</td>'+'<td></td>'+'</tr>'
+        
+        contenidoHTML = (
+            '<!DOCTYPE html>'
+            '<html>' 
+            '<head> '
+            '<meta charset="utf-8"> '
+            '<title>REPORTE CLASIFICACION '+str(fecha)+'</title>'
+            '<link href="assets/css/bootstrap-responsive.css" type="text/css" rel="stylesheet">'
+            '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet">'
+            '<link rel="stylesheet" type="text/css"  href="Style.css">'
+            '<link rel="stylesheet" type="text/css" href="bootstrap.css">'
+            '</head>'
+            '<body>'
+            '<div class="container-fluid welcome-page" id="home">'
+            '<div class="jumbotron">'
+            '<h2>'
+            '<span>'+"Clasificacion Temporada "+str(fecha)+'</span>'
+            '</h2>'
+            '</div>'
+            '</div>')
+        
+        file = open("./REPORTES/"+nombre,"w",encoding = "utf-8")
+        file.write(str(contenidoHTML))
+        file.write('<h2>'
+            '<span>Resumen de clasificacion</span>'
+            '</h2>'
+            '</br>'
+            '</br>')
+        
+        txtHtml=(
+            '<table class="table table-responsive">'
+            '<thead>'
+            '<tr>'
+            '<th scope="col">Equipo</th>'
+            '<th scope="col">Puntos</th>'
+            '</tr>'
+            '</thead>'
+            '<tbody>')
+        
+        for x in equipos:
+            i += 1
+            txtHtml = txtHtml+'<tr>'+'<td>'+str(x)+'</td>'+'<td></td>'+'</tr>'
+        
+        file.write(txtHtml)
+        file.write('</tbody>'
+            '</table>'
+            '</div>'
+            '</div>')
+
+        file.write(txtFinal)
+        file.close()
+        webbrowser.open("file:///"+os.getcwd()+"/REPORTES/"+nombre) 
+        #print(equipos)
+        #print("Cantidad de Equipos en la Temporada: "+str(len(equipos)))
+        #print("\n")
+
+        #dicEq = dict(zip(equipos,range(len(equipos))))
+        #print(dicEq)
+
+        """aux = []
+        valor = 0
+        for eq in equipos:
+            for x in self.data:
+                if x.temporada == fecha:
+                    puntos = 0
+                    if x.equipo1 == eq:
+                        if x.goles1 > x.goles2:
+                            puntos += 3
+                            if aux is None:
+                                aux.append(puntos)
+                            else:
+                                aux += aux.append(puntos)
+                        elif x.goles1 < x.goles2:
+                            puntos += 0
+                            if aux is None:
+                                aux.append(puntos)
+                            else:
+                                aux += aux.append(puntos)
+                        elif x.goles1 == x.goles2:
+                            puntos += 1
+                            if aux is None:
+                                aux.append(puntos)
+                            else:
+                                aux += aux.append(puntos)
+                        print(aux)"""
+
+        #dicEq = dict(zip(equipos,range(len(equipos))))
+        
+        """#aux = []
+        for x in self.puntos:
+            for y in dicEq:
+                aux = []
+                if x.equipo == y:
+                    dicEq[y] = self.NoSale(x.puntos)"""
+                
+        #print(dicEq)
+
 
     def opTopSin(self,condicion,fecha,numtop):
+        # VICTORIA SUMA 3 PUNTOS
+        # EMPATE SUMA 1 PUNTOS
+        # DERROTA SUMA 0 PUNTOS
+        listEq1 = dict()
+        listEq2 = dict()
+        aux1 = []
+        aux2 = []
+        equipos = []
+        cont = 0
+        cont2 = 0
+        #AGREGAR A DICCIONARIOS LOS EQUIPOS EN LA TEMPORADA
+        for x in self.data:
+            if x.temporada == fecha:
+                if x.equipo1 in listEq1:
+                    if listEq1[x.equipo1] == 1:
+                        cont  =+ 1
+                    listEq1[x.equipo1] += 1
+                else:
+                    listEq1[x.equipo1] = 1
+
+                if x.equipo2 in listEq2:
+                    if listEq2[x.equipo2] == 1:
+                        cont2 =+ 1
+                    listEq2[x.equipo2] += 1
+                else:
+                    listEq2[x.equipo2] = 1
+        #AGREGAR LAS LLAVES DEL DICCIONARIO A LISTA
+        for x in listEq1:
+            aux1.append(x)
+        for y in listEq2:
+            aux2.append(y)   
+        #AGREGAR A UNA LISTA LOS EQUIPOS IGUALES EN CADA DICCIONARIO
+        for e in aux1:
+            for f in aux2:
+                if(e==f):
+                    equipos.append(e)
+                    break
+                
         global texto
         if condicion == "SUPERIOR":
-            for x in self.data:
-                if x.temporada == fecha:
-                    pass
+            for x in range(int(numtop)):
+                contenido = "\nTop Superior: "+str(x)+". "
+                texto += contenido+equipos[x]
         elif condicion == "INFERIOR":
-            for x in self.data:
-                if x.temporada == fecha:
-                    pass
+            for x in range(int(numtop)):
+                contenido = "\nTop Inferior "+str(x)+". "
+                texto += contenido+equipos[x]
         #print(condicion+"\n"+fecha+"\n"+numtop)
     
     def opTopCon(self,condicion,fecha,numtop):
+        # VICTORIA SUMA 3 PUNTOS
+        # EMPATE SUMA 1 PUNTOS
+        # DERROTA SUMA 0 PUNTOS
+        listEq1 = dict()
+        listEq2 = dict()
+        aux1 = []
+        aux2 = []
+        equipos = []
+        cont = 0
+        cont2 = 0
+        #AGREGAR A DICCIONARIOS LOS EQUIPOS EN LA TEMPORADA
+        for x in self.data:
+            if x.temporada == fecha:
+                if x.equipo1 in listEq1:
+                    if listEq1[x.equipo1] == 1:
+                        cont  =+ 1
+                    listEq1[x.equipo1] += 1
+                else:
+                    listEq1[x.equipo1] = 1
+
+                if x.equipo2 in listEq2:
+                    if listEq2[x.equipo2] == 1:
+                        cont2 =+ 1
+                    listEq2[x.equipo2] += 1
+                else:
+                    listEq2[x.equipo2] = 1
+        #AGREGAR LAS LLAVES DEL DICCIONARIO A LISTA
+        for x in listEq1:
+            aux1.append(x)
+        for y in listEq2:
+            aux2.append(y)   
+        #AGREGAR A UNA LISTA LOS EQUIPOS IGUALES EN CADA DICCIONARIO
+        for e in aux1:
+            for f in aux2:
+                if(e==f):
+                    equipos.append(e)
+                    break
+                
         global texto
         if condicion == "SUPERIOR":
-            for x in self.data:
-                if x.temporada == fecha:
-                    pass
+            for x in range(int(numtop)):
+                contenido = "\nTop Superior: "+str(x)+". "
+                texto += contenido+equipos[x]
         elif condicion == "INFERIOR":
-            for x in self.data:
-                if x.temporada == fecha:
-                    pass
+            for x in range(int(numtop)):
+                contenido = "\nTop Inferior "+str(x)+". "
+                texto += contenido+equipos[x]
         #print(condicion+"\n"+fecha+"\n"+numtop)
 
-    def opPartidos(self):
-        pass
+    def opPartidos(self,equipo,fecha,nombre,jornadaI,jornadaF):
+        global texto
+        eq = equipo.replace('"','')
+        texto = "\nYa no se me dio para hacer este comando :("+"\n"+str(eq)+" "+str(fecha)
+        
 
     def opAdios(self):
         MessageBox.showinfo(message="Gracias por utilizarme, nos vemos.",title="Bai")
         exit(0)
-
     
     def EntryBoxAdd(self):
         return texto

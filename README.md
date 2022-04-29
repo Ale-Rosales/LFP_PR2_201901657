@@ -42,22 +42,17 @@ Guion | Signo guion | '-' | -
 | | ::= | TOP
 | | ::= | ADIOS
 | RESULTADO | ::= | pr_resultado cadena pr_vs cadena pr_temporada menorque entero guion entero mayorque
-| JORNADA | ::= | pr_jornada entero pr_temporada menorque entero guion entero mayorque LISTA
+| JORNADA | ::= | pr_jornada entero pr_temporada menorque entero guion entero mayorque guion pr_f string | entero
 | GOLES | ::= | pr_goles CONDICION cadena pr_temporada menorque entero guion entero mayorque
-| TABLA | ::= | pr_tabla pr_temporada menorque entero guion entero mayorque LISTA
+| TABLA | ::= | pr_tabla pr_temporada menorque entero guion entero mayorque guion pr_f string | entero
 | PARTIDOS | ::= | pr_partidos cadena pr_temporada menorque entero guion entero mayorque LISTA
-| TOP | ::= | pr_top CONDICION pr_temporada menorque entero guion entero mayorque LISTA
+| TOP | ::= | pr_top CONDICION pr_temporada menorque entero guion entero mayorque guion pr_n entero
 | ADIOS | ::= | pr_adios
 | CONDICION | ::= | pr_local 
 | | ::= | \| pr_visitante
 | | ::= | \| pr_total
 | | ::= | \| pr_superior
 | | ::= | \| pr_inferior
-| LISTA | ::= | BANDERA LISTA_
-| LISTA_ | ::=  | BANDERA LISTA_
-| LISTA_ | ::= | epsilon
-| BANDERA | ::= | pr_bandera VALOR
-| VALOR | ::= | string
-| | ::= | \| entero
+
 
 
